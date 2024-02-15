@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('event_messages', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->string('event_username');
-            $table->string('event_name');
-            $table->text('event_message');
-            $table->boolean('event_like')->default(false);
-            $table->timestamps();
+        $table->string('receiver_name');
+        $table->string('sender_name');
+        $table->string('unique_id')->nullable();
+        $table->string('device_id')->nullable();    ;
+        $table->boolean('likes')->default(false);
+        $table->timestamps();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('event_messages');
+        Schema::dropIfExists('employees');
     }
 };

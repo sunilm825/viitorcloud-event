@@ -34,7 +34,7 @@ class TestEvents implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('Map-diya-wall-channel');
+        return new Channel('viitorcloud-event');
     }
 
     /**
@@ -44,7 +44,7 @@ class TestEvents implements ShouldBroadcastNow
      */
     public function broadcastAs()
     {
-        return 'ScreenLayoutContinue';
+        return 'message';
     }
     /**
      * The event's broadcast data.
