@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ActionEvent;
 use App\Events\TestEvents;
 use App\Models\Employee;
 use App\Models\EventMessage;
@@ -41,7 +42,7 @@ class EventController extends Controller
         Comment::create($validatedData_comment);
         Employee::create($validatedData_employee);
 
-        event(new TestEvents($request->toArray()));
+        event(new ActionEvent($request->toArray()));
         // TestEvents::broadcast($request->all());
 
         return redirect()->route('index')->with('success', 'Data store successfully!');

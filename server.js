@@ -1,32 +1,33 @@
-'use strict';
-
-var app = require('express')();
-var server = require('http').Server(app);
-
-let io = require('socket.io')(server,{
-    allowEIO3: true,
+const server = require('http').createServer();
+const io = require('socket.io')(server, {
     cors: {
-        origin: true,
-        credentials: true
-    },
+        origin: 'http://viitorcloud-event.loc',
+        methods: ['GET', 'POST'],
+        credentials: true  // Add this line
+    }
 });
-require('dotenv').config();
-var cors = require('cors'); // Add the cors middleware
+const Redis = require('ioredis');
+const redis = new Redis();
 
+io.on('connection', (socket) => {
+    // console.log(`Socket connected: ${socket.id}`);
+  
+    // You can access the socket ID like this:
+    const socketId = socket.id;
+    io.emit('socketId', socket.id);
+  });
 
-var redisPort = process.env.REDIS_PORT;
-var redisHost = process.env.REDIS_HOST;
-var ioRedis = require('ioredis');
-var redis = new ioRedis(redisPort, redisHost);
-redis.subscribe('viitorcloud-event');
-redis.on('message', function (channel, message) {
-//   message  = JSON.parse(message);
-  console.log(message);
-//   io.emit(channel + ':' + message.event, message.data);
-});
-
-var broadcastPort = process.env.BROADCAST_PORT;
-server.listen(broadcastPort, function () {
-  console.log('Socket server is running. -'+broadcastPort);
+redis.subscribe('vc-channel', function(err, count) {
+    // console.log(err,count);
 });
 
+redis.on('message', function(channel, message) {
+    console.log('Message Received: ' + message);
+    message = JSON.parse(message);
+    io.emit(channel + ':' + message.event, message.data);
+    // vc-channel
+});
+
+server.listen(9001, function(){
+    console.log('Listening on Port 9001');
+});
